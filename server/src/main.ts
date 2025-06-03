@@ -7,6 +7,7 @@ import "dotenv/config";
 import "../database/checkConnection";
 
 // Import the Express application from ./app
+import type { RequestHandler } from "express";
 import app from "./app";
 
 // Get the port from the environment variables
@@ -20,3 +21,9 @@ app
   .on("error", (err: Error) => {
     console.error("Error:", err.message);
   });
+
+const sayWelcome: RequestHandler = (req, res) => {
+  res.json({ message: "Welcome to Wild Series !" });
+};
+
+app.get("/", sayWelcome);
