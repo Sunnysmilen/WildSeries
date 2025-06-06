@@ -26,20 +26,25 @@ const programs = [
 // Declare the action
 
 import type { RequestHandler } from "express";
-import programRepository from "./programRepository";
 
-const browse: RequestHandler = async (req, res) => {
-  const programsFromDB = await programRepository.readAll();
+const browse: RequestHandler = (req, res) => {
+  if (req.query.q != null) {
+    const filteredPrograms = programs.filter((program) =>
+      program.synopsis.includes(req.query.q as string),
+    );
 
-  res.json(programsFromDB);
+    res.json(filteredPrograms);
+  } else {
+    res.json(programs);
+  }
 };
 const read: RequestHandler = (req, res) => {
   const parsedId = Number.parseInt(req.params.id);
 
-  const category = programs.find((p) => p.id === parsedId);
+  const program = programs.find((p) => p.id === parsedId);
 
-  if (category != null) {
-    res.json(category);
+  if (program != null) {
+    res.json(program);
   } else {
     res.sendStatus(404);
   }
@@ -47,4 +52,4 @@ const read: RequestHandler = (req, res) => {
 
 // Export it to import it somewhere else
 
-export default { browse };
+export default { browse, read };

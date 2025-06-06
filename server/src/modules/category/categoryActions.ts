@@ -35,7 +35,6 @@ const reads: RequestHandler = (req, res) => {
     res.sendStatus(404);
   }
 };
-
 // Export them to import them somewhere else
 
 export default { browser, reads };
