@@ -13,13 +13,12 @@ class ItemRepository {
 
   async create(item: Omit<Item, "id">) {
     // Execute the SQL INSERT query to add a new item to the "item" table
+    const { title, user_id } = item;
     const [result] = await databaseClient.query<Result>(
       "insert into item (title, user_id) values (?, ?)",
       [item.title, item.user_id],
     );
-
-    // Return the ID of the newly inserted item
-    return result.insertId;
+    return result.insertId as number;
   }
 
   // The Rs of CRUD - Read operations

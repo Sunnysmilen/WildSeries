@@ -45,16 +45,12 @@ const add: RequestHandler = async (req, res, next) => {
       title: req.body.title,
       user_id: req.body.user_id,
     };
-
-    // Create the item
     const insertId = await itemRepository.create(newItem);
-
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted item
     res.status(201).json({ insertId });
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
+// The D of BREAD - Delete operation
 
 export default { browse, read, add };

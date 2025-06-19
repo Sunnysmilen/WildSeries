@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-//  const URL = process.env.VITE_API_URL;
-console.log(import.meta.env.VITE_API_URL);
 type Program = {
   id: number;
   title: string;

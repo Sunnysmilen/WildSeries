@@ -1,40 +1,48 @@
+import type { RequestHandler } from "express";
 // Import access to data
 import categoryRepository from "./categoryRepository";
 
-// Some data to make the trick
+const browser: RequestHandler = async (req, res, next) => {
+  try {
+    const categoriesFromDB = await categoryRepository.readAll();
 
-const categories = [
-  {
-    id: 1,
-    name: "Comédie",
-  },
-  {
-    id: 2,
-    name: "Science-Fiction",
-  },
-];
-
-// Declare the actions
-
-import type { RequestHandler } from "express";
-
-const browser: RequestHandler = async (req, res) => {
-  const categoriesFromDB = await categoryRepository.readAll();
-
-  res.json(categoriesFromDB);
-};
-
-const reads: RequestHandler = (req, res) => {
-  const parsedId = Number.parseInt(req.params.id);
-
-  const category = categories.find((c) => c.id === parsedId);
-
-  if (category != null) {
-    res.json(category);
-  } else {
-    res.sendStatus(404);
+    res.json(categoriesFromDB);
+  } catch (err) {
+    next(err);
   }
 };
-// Export them to import them somewhere else
 
-export default { browser, reads };
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const parsedId = Number.parseInt(req.params.id);
+
+    const category = await categoryRepository.read(parsedId);
+
+    if (category == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(category);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const edit: RequestHandler = async (req, res, next) => {
+  try {
+    const category = {
+      id: Number(req.params.id),
+      name: req.body.name,
+    };
+    const affectedRows = await categoryRepository.update(category);
+    if (affectedRows === 0) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browser, read, edit };
